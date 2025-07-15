@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  AGENTE
+}
+
+model Usuario {
+  id                  Int     @id @default(autoincrement())
+  name                String
+  CPF                 String  @unique
+  password            String
+  role                Role    @default(AGENTE)
+
+  registradoPorId     Int?
+  registradoPor       Usuario? @relation("AdminAgentes", fields: [registradoPorId], references: [id])
+
+  agentesResgistrados Usuario[] @relation("AdminAgentes")
+
+  pessoas             Pessoa[]
+}
+
+model Pessoa {
+  id                  Int    @id @default(autoincrement())
+  name                String
+  CPF                 String @unique
+  idade               Int
+
+  coletadoPorId       Int?
+  coletadoPor         Usuario? @relation(fields: [coletadoPorId], references: [id])
+  
+  criadoEm            DateTime @default(now())
+  atualizadoEm        DateTime @updatedAt
+}
