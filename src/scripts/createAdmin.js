@@ -10,6 +10,7 @@ async function main() {
     data: {
       name: "jherison",
       CPF: "61443681326",
+      email: "jherison13@gmail.com",
       password: hashedPassword,
       role: "ADMIN",
     },
