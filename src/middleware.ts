@@ -12,10 +12,10 @@ export async function middleware(req: NextRequest) {
         const pathname = req.nextUrl.pathname;
         
         if (pathname.startsWith("/admin") && role !== "ADMIN")
-            return NextResponse.redirect(new URL("/agente", req.url));
+            return NextResponse.redirect(new URL("/dashboard", req.url));
 
         if (pathname.startsWith("/agente") && role !== "AGENTE")
-            return NextResponse.redirect(new URL("/admin", req.url));
+            return NextResponse.redirect(new URL("/dashboard", req.url));
 
         return NextResponse.next();
     } catch (error) {

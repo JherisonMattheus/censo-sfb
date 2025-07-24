@@ -7,18 +7,19 @@ import { handlerError } from "@/utils/handlerError";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
     try {
         await authmiddleware(req);
         
-        const id = Number(params.id);
+        const { id } = await params;
+        const numID = Number(id);
 
-        if (isNaN(id))
+        if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
         const pessoa = await prisma.pessoa.findUnique({
-            where: { id }
+            where: { id: numID }
         });
 
         if (!pessoa)
@@ -31,18 +32,19 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         await authmiddleware(req);
 
-        const id = Number(params.id);
+        const { id } = await params;
+        const numID = Number(id);
 
-        if (isNaN(id))
+        if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
         const body = await req.json();
 
-        const pessoa = await updatePessoa({...body, id});
+        const pessoa = await updatePessoa({...body, id: numID});
 
         return NextResponse.json({
             message: "Dados atualizados com sucesso" ,
@@ -55,7 +57,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     
     try {
         const payload = await authmiddleware(req);
@@ -63,12 +65,13 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
         if (payload.role !== "ADMIN")
             throw new AppError("Acesso negado: Você não tem permissão para deletar os dados desse usuário", 403);
 
-        const id = Number(params.id);
+        const { id } = await params;
+        const numID = Number(id);
 
-        if (isNaN(id))
+        if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
-        const pessoa = await deletePessoa(id);
+        const pessoa = await deletePessoa(numID);
 
         return NextResponse.json({
             message: "Pessoa deletado com sucesso",

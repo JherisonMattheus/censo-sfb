@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/header";
+import { SyncOnReconnect } from "@/components/syncOnReconnect";
+import HeaderWrapper from "@/components/headerWrapper";
+import Footer from "@/components/footer";
 
 
 const rubik = Rubik({
@@ -23,11 +25,13 @@ export default function RootLayout({
     <html lang="pt-br">    
       <body className={`${rubik.className} min-h-screen flex flex-col antialiased`} >
 
-        <Header/>
+        <SyncOnReconnect/>
+
+        <HeaderWrapper/>
 
         {children}
 
-
+        <Footer/>
 
       </body>
     </html>

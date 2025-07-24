@@ -5,7 +5,7 @@ import { AppError } from "@/utils/AppError";
 
 export async function POST(req: NextRequest) {
     try {
-        return loginHandler(req);
+        return await loginHandler(req);
     } catch (error) {
         if (error instanceof AppError) {
             return NextResponse.json(

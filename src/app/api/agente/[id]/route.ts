@@ -7,18 +7,18 @@ import { handlerError } from "@/utils/handlerError";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
     try {
         await authmiddleware(req);
-        
-        const id = Number(params.id);
+        const { id } = await params;
+        const numID = Number(id);
 
-        if (isNaN(id))
+        if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
         const agente = await prisma.usuario.findUnique({
-            where: { id: id },
+            where: { id: numID },
         });
 
         if (!agente)
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     
     try {
 
@@ -40,15 +40,15 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         if (payload.role !== "ADMIN") {
             throw new AppError("Acesso negado: Você não tem permissão para alterar os dados desse usuário", 403);
         }
-
-        const id = Number(params.id);
+        const { id } = await params;
+        const numID = Number(id);
                 
-        if (isNaN(id))
+        if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
         const body = await req.json();
 
-        const agente = await updateAgente({...body, id});
+        const agente = await updateAgente({...body, id: numID});
 
         return NextResponse.json({
             message: "Dados do agente atualizados com sucesso",
@@ -61,7 +61,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 
-export async function DELETE(req: NextRequest, {params}: { params: {id: string} }) {
+export async function DELETE(req: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     
     try {
 
@@ -69,13 +69,13 @@ export async function DELETE(req: NextRequest, {params}: { params: {id: string} 
 
         if (payload.role !== "ADMIN")
             throw new AppError("Acesso negado: Você não tem permissão para deletar os dados desse usuário", 403);
+        const { id } = await params;
+        const numID = Number(id);
 
-        const id = Number(params.id);
-
-        if (isNaN(id))
+        if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
-        const agente = await deleteAgente(id);
+        const agente = await deleteAgente(numID);
 
         return NextResponse.json({
             message: "Agente deletado com sucesso",
