@@ -12,8 +12,8 @@ export async function registerPessoa({ name, CPF, email, idade, userId }: {
     userId: number;
 }) {
 
-    if (!isValidCPF(CPF))
-        throw new AppError("CPF inválido", 400);
+    /*if (!isValidCPF(CPF))
+        throw new AppError("CPF inválido", 400);*/
 
     if (!isValidName(name))
         throw new AppError("Nome inválido", 400);
@@ -24,7 +24,7 @@ export async function registerPessoa({ name, CPF, email, idade, userId }: {
     if (!isValidAge(idade))
         throw new AppError("Idade inválida", 400);
 
-    const existingPessoa = await prisma.usuario.findUnique({
+    const existingPessoa = await prisma.pessoa.findUnique({
         where: { CPF },
     });
 

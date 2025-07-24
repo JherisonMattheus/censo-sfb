@@ -1,5 +1,6 @@
 'use client';
 
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -14,29 +15,25 @@ export default function LoginForm() {
         setError('');
 
         try {
-            const res = await fetch("/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: "include",
-                body: JSON.stringify({ CPF, password})
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setError(data.error || "Erro ao fazer login");
-                return;
+            const res = await axios.post("/api/login", {
+                CPF,
+                password,
+            }, {
+                withCredentials: true,
             }
+            );
 
-            if (data.role === "ADMIN"){
-                router.push("/admin");
+            const data = await res.data;
+            
+            router.push("/dashboard");
+            
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                setError(error.response.data.error);
             } else {
-                router.push("/agente");
+                setError("Erro ao conectar com o servidor");
             }
-        } catch (error) {
-            setError("Erro ao conectar com o servidor");
+            
             console.error(error)
         }
     };
@@ -71,15 +68,19 @@ export default function LoginForm() {
                         />
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center">
                         <label className="flex items-center text-sm">
                             <input type="checkbox" className="mr-2"/>
                             Lembre de mim
                         </label>
-                        <a href="#" className="text-sm text-blue-500 hover:underline">Esqueci a senha</a>
+                    </div>
+                    <div className="flex items-center justify-center">
+                        {error && (
+                        <p className="text-red-600 text-sm">{error}</p>
+                        )}
                     </div>
 
-                    <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-[#3b83f6f1] active:bg-[#3b83f6fa]">
+                    <button type="submit" className="w-full cursor-pointer bg-blue-600 text-white py-2 rounded-md hover:bg-[#3b83f6f1] active:bg-[#3b83f6fa]">
                         Entrar
                     </button>
         </form>

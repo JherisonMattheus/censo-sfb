@@ -1,10 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Header(){
     return (
         <header className="flex px-2 py-6 bg-blue-500 text-white">
             <div className="flex items-center justify-between w-full mx-auto">
-                <div>
+                <div className="flex items-center">
+                    <Image width={60} height={60} src={"/logo.png"} alt={"Logo"}></Image>
                     <h1>
                         Censo - SFB
                     </h1>
@@ -13,7 +15,7 @@ export function Header(){
                 <nav>
                     <ul className="flex items-center justify-center gap-2">
                         <li>
-                            <Link href="">
+                            <Link href="/dashboard">
                                 Home
                             </Link>
                         </li>

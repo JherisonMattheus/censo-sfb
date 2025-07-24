@@ -11,8 +11,8 @@ export async function registerAgente({ name, CPF, email, password, adminId}: {
     password: string;
     adminId: number;
 }) {
-        if (!isValidCPF(CPF))
-            throw new AppError("CPF inválido", 400);
+        /*if (!isValidCPF(CPF))
+            throw new AppError("CPF inválido", 400);*/
 
         if (!isValidEmail(email))
             throw new AppError("Email inválido", 400);

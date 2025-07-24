@@ -20,7 +20,10 @@ export async function GET(req: NextRequest) {
             orderBy: { name: "asc" },
         });
 
-        return NextResponse.json(pessoas);
+        const total = await prisma.pessoa.count();
+        const hasMore = page * pageSize > total;
+
+        return NextResponse.json({pessoas, hasMore});
     } catch (error) {
         return handlerError(error);
     }
