@@ -1,5 +1,5 @@
-import { deletePessoa } from "@/controllers/deletePessoaController";
-import { updatePessoa } from "@/controllers/updatePessoaController";
+import { deleteMoradia } from "@/controllers/deleteMoradiaController";
+import { updateMoradia } from "@/controllers/updateMoradiaController";
 import { prisma } from "@/lib/prisma";
 import { authmiddleware } from "@/middlewares/authmiddleware";
 import { AppError } from "@/utils/AppError";
@@ -7,32 +7,32 @@ import { handlerError } from "@/utils/handlerError";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
 
     try {
         await authmiddleware(req);
-        
+
         const { id } = await params;
         const numID = Number(id);
 
         if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
-        const pessoa = await prisma.pessoa.findUnique({
-            where: { id: numID }
+        const moradia = await prisma.moradia.findUnique({
+            where: { id: numID},
         });
 
-        if (!pessoa)
-            throw new AppError("Pessoa não encontrada", 404);
+        if (!moradia)
+            throw new AppError("Dado não encontrado", 404);
 
-        return NextResponse.json(pessoa)
+        return NextResponse.json(moradia);
+
     } catch (error) {
         return handlerError(error);
     }
 }
 
-
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
     
     try {
         await authmiddleware(req);
@@ -45,23 +45,23 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
         const body = await req.json();
 
-        const pessoa = await updatePessoa({...body, id: numID});
+        const moradia = await updateMoradia({ ...body, id: numID });
 
         return NextResponse.json({
-            message: "Dados atualizados com sucesso" ,
-            pessoa,
+            message: "Dados atualizados com sucesso",
+            moradia,
         });
 
-    } catch (error: any) {
+    } catch (error) {
         return handlerError(error);
     }
 }
 
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    
     try {
         const payload = await authmiddleware(req);
+
 
         if (payload.role !== "ADMIN")
             throw new AppError("Acesso negado: Você não tem permissão para deletar esses dados", 403);
@@ -72,12 +72,13 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         if (isNaN(numID))
             throw new AppError("ID inválido", 400);
 
-        const pessoa = await deletePessoa(numID);
+        const moradia = deleteMoradia(numID);
 
         return NextResponse.json({
-            message: "Pessoa deletado com sucesso",
-            pessoa,
+            message: "Dados deletados com sucesso",
+            moradia,
         });
+
     } catch (error) {
         return handlerError(error);
     }

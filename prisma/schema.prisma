@@ -29,6 +29,23 @@ model Usuario {
 
   agentesResgistrados Usuario[] @relation("AdminAgentes")
 
+  moradias            Moradia[]
+  pessoas             Pessoa[]
+}
+
+model Moradia {
+  id                  Int @id @default(autoincrement())
+  num                 String
+  endereco            String
+  bairro              String
+  cidade              String
+  estado              String
+  CEP                 String
+
+  coletadoPorId       Int?
+  coletadoPor         Usuario? @relation(fields: [coletadoPorId], references: [id])
+
+  nomeDoColetador     String
   pessoas             Pessoa[]
 }
 
@@ -38,6 +55,9 @@ model Pessoa {
   CPF                 String @unique
   email               String
   idade               Int
+
+  moradiaId           Int
+  moradia             Moradia? @relation(fields: [moradiaId], references: [id])
 
   coletadoPorId       Int?
   coletadoPor         Usuario? @relation(fields: [coletadoPorId], references: [id], onDelete: SetNull)

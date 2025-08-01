@@ -12,8 +12,8 @@ export async function registerPessoa({ name, CPF, email, idade, userId }: {
     userId: number;
 }) {
 
-    /*if (!isValidCPF(CPF))
-        throw new AppError("CPF inválido", 400);*/
+    // if (!isValidCPF(CPF))
+        // throw new AppError("CPF inválido", 400);
 
     if (!isValidName(name))
         throw new AppError("Nome inválido", 400);

@@ -4,6 +4,7 @@ import "./globals.css";
 import { SyncOnReconnect } from "@/components/syncOnReconnect";
 import HeaderWrapper from "@/components/headerWrapper";
 import Footer from "@/components/footer";
+import MainWrapper from "@/components/mainWrapper";
 
 
 const rubik = Rubik({
@@ -29,8 +30,10 @@ export default function RootLayout({
 
         <HeaderWrapper/>
 
-        {children}
-
+        <MainWrapper>
+          {children}
+        </MainWrapper>
+        
         <Footer/>
 
       </body>
