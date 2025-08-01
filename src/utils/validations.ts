@@ -25,3 +25,19 @@ export function isValidPassword(password: string): boolean {
 export function isValidAge(age: number): boolean {
     return age >= 0 && age <= 130;
 }
+
+export function isValidEndereco(endereco: string): boolean {
+    return /^[A-Za-zÀ-ÿ0-9\s\.\-\,']{2,100}$/.test(endereco);
+}
+
+export function isValidNum(num: string): boolean {
+    return /\d+^[A-Za-z\-\/\s]*$/.test(num);
+}
+
+export function isValidEstado(estado: string): boolean {
+    return /^(AC|AL|AM|AP|BA|CE|DF|ES|GO|MA|MG|MS|MT|PA|PB|PE|PI|PR|RJ|RN|RO|RR|RS|SC|SE|SP|TO)$/.test(estado);
+}
+
+export function isValidCEP(CEP: string): boolean {
+    return /^\d{5}-\d{3}$/.test(CEP);
+}

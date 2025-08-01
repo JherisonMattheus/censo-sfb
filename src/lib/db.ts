@@ -11,10 +11,20 @@ export interface Pessoa {
     synced: number,
 }
 
+export interface Moradia {
+    id: number,
+    endereco: string,
+    bairro: string,
+    numero: string,
+    criadoEm: Date,
+    synced: number,
+}
+
 export type PessoaInsert = Omit<Pessoa, "id">;
 
 export class AppDB extends Dexie {
     pessoa: Dexie.Table<Pessoa, number>;
+    moradia: Dexie.Table<Moradia, number>;
 
     constructor() {
         super("LocalDB");

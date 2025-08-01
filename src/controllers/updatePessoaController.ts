@@ -30,6 +30,13 @@ export async function updatePessoa( {id, name, CPF, email, idade}: {
     if(!existingPessoa)
         throw new AppError("Pessoa não encontrada", 404);
 
+    const existingCPF = await prisma.pessoa.findUnique({
+        where: {CPF},
+    });
+
+    if(existingCPF?.id !== id) {
+        throw new AppError("CPF já cadastrado", 409);
+    }
 
     const pessoa = await prisma.pessoa.update({
         where: { id },
