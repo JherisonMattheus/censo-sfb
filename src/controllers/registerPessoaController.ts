@@ -4,11 +4,12 @@ import { isValidAge, isValidCPF, isValidEmail, isValidName } from "@/utils/valid
 
 
 
-export async function registerPessoa({ name, CPF, email, idade, userId }: {
+export async function registerPessoa({ name, CPF, email, idade, moradiaId, userId }: {
     name: string;
     CPF: string;
     email: string;
     idade: number;
+    moradiaId: number;
     userId: number;
 }) {
 
@@ -28,14 +29,21 @@ export async function registerPessoa({ name, CPF, email, idade, userId }: {
         where: { CPF },
     });
 
+    const existingMoradia = await prisma.moradia.findUnique({
+        where: { id: moradiaId },
+    });
+
+    if (!existingMoradia)
+        throw new AppError("Moradia não encontrada", 404);
+
     const agente = await prisma.usuario.findUnique({
         where: { id: userId },
     });
 
-    if(existingPessoa)
+    if (existingPessoa)
         throw new AppError("CPF já cadastrado", 409);
 
-    if(!agente)
+    if (!agente)
         throw new AppError("Agente não encontrado", 404);
 
     const pessoa = await prisma.pessoa.create({
@@ -47,7 +55,10 @@ export async function registerPessoa({ name, CPF, email, idade, userId }: {
             coletadoPor: {
                 connect: { id: userId}
             },
-            nomeDoColetador: agente.name
+            nomeDoColetador: agente.name,
+            moradia: {
+                connect: {id: moradiaId}
+            },
         }
     });
     return pessoa;

@@ -31,7 +31,7 @@ export function isValidEndereco(endereco: string): boolean {
 }
 
 export function isValidNum(num: string): boolean {
-    return /\d+^[A-Za-z\-\/\s]*$/.test(num);
+    return /^\d+[A-Za-z\-\/\s]*$/.test(num);
 }
 
 export function isValidEstado(estado: string): boolean {

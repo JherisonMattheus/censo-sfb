@@ -13,24 +13,24 @@ export async function registerMoradia({num, endereco, bairro, cidade, estado, CE
     userId: number;
 }) {
 
-    if (isValidNum(num))
+    if (!isValidNum(num))
         throw new AppError("Número inválido", 400);
 
-    if (isValidEndereco(endereco))
+    if (!isValidEndereco(endereco))
         throw new AppError("Endereço inválido", 400);
 
-    if (isValidEndereco(bairro))
+    if (!isValidEndereco(bairro))
         throw new AppError("Bairro inválido", 400);
 
-    if (isValidEndereco(cidade))
+    if (!isValidEndereco(cidade))
         throw new AppError("Cidade inválida", 400);
-
-    if (isValidEstado(estado))
+    
+    if (!isValidEstado(estado))
         throw new AppError("Estado inválido", 400);
 
-    if (isValidCEP(CEP))
+    if (!isValidCEP(CEP))
         throw new AppError("CEP inválido", 400);
-
+    
     const agente = await prisma.usuario.findUnique({
         where: {id: userId},
     });

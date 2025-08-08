@@ -2,10 +2,11 @@
 
 import FormMoradia from "@/components/formMoradia";
 import FormPessoa from "@/components/formPessoa";
-import axios from "axios";
+import { AppError } from "@/utils/AppError";
 import { useState } from "react";
 
 type Moradia = {
+    id?: number,
     num: string,
     endereco: string,
     bairro: string,
@@ -14,18 +15,18 @@ type Moradia = {
     CEP: string,
 };
 
+type Pessoa = {
+    name: string;
+    CPF: string;
+    email: string;
+    idade: number;
+}
+
 export default function Add() {
 
-    const estados = [
-        'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES',
-        'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR',
-        'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC',
-        'SP', 'SE', 'TO'
-    ];
-
-    const [error, setError] = useState('');
     const [formStatus, setFormStatus] = useState<'moradia' | 'pessoa'>('moradia');
     const [idMoradia, setIdMoradia] = useState<number | null>(null);
+    const [isCreate, setIsCreate] = useState(false);
     const [dadosMoradia, setDadosMoradia] = useState<Moradia>({
         num: '',
         endereco: '',
@@ -34,34 +35,28 @@ export default function Add() {
         estado: 'MA',
         CEP: '',
     });
+    const [dadosPessoas, setDadosPessoas] = useState<Pessoa[]>([{
+        name: '',
+        CPF: '',
+        email: '',
+        idade: 0,
+    }]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setDadosMoradia((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
+    const handleMoradiaSucess = (dataMoradia: Moradia) => {
 
+        console.log(dataMoradia)
+        if(!dataMoradia.id)
+            throw new AppError("ID não encontrada", 404);
+        
+        setIdMoradia(dataMoradia.id);
+        setDadosMoradia(dataMoradia)
+        setFormStatus('pessoa');
+        setIsCreate(true);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        try {
-            const res = await axios.post('/api/moradia', dadosMoradia, {
-                withCredentials: true,
-            })
-
-            setIdMoradia(res.data.moradia.id);
-            setFormStatus('pessoa');
-
-        } catch (error: any) {
-            setError(error);
-        }
     }
 
     const handleVolta = () => {
-
+        setFormStatus('moradia');
     }
     
     return (
@@ -71,15 +66,17 @@ export default function Add() {
                     {
                         formStatus === 'moradia' && 
                         <FormMoradia
-                            dados={dadosMoradia}
-                            onChange={handleChange}
-                            onSubmit={handleSubmit}
-                            error={error}
+                        isCreate={isCreate}
+                        setDados={setDadosMoradia}
+                        dados={dadosMoradia}
+                        onSucess={handleMoradiaSucess}
                         />
                     }
                     {
                         formStatus === 'pessoa' &&
                         <FormPessoa
+                        dados={dadosPessoas}
+                        setDados={setDadosPessoas}
                         MoradiaId={idMoradia}
                         onVoltar={handleVolta}
                         />

@@ -1,10 +1,21 @@
+'use client'
+import { SetStateAction } from "react";
+
+type Pessoa = {
+    name: string;
+    CPF: string;
+    email: string;
+    idade: number;
+}
 
 type Props = {
+    dados: Pessoa[];
+    setDados: React.Dispatch<SetStateAction<Pessoa[]>>
     MoradiaId: number | null;
     onVoltar: () => void;
 }
 
-export default function FormPessoa({ MoradiaId, onVoltar }: Props) {
+export default function FormPessoa({ dados, setDados, MoradiaId, onVoltar }: Props) {
     
     return (
         <form action="">
